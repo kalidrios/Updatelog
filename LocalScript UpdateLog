@@ -1,0 +1,88 @@
+-- https://github.com/kalidrios
+
+local table1 = {
+	--"\226\155\143\239\184\143 Diamond Mine!",
+	--"\240\159\146\142 Diamond Breakables!",
+	--"\226\156\168 Diamond Chest!",
+	--"\240\159\142\129 Diamond Loot Bags!",
+	--"\240\159\148\174 Diamond Enchants!",
+	"\240\159\167\170 xtetse !",
+	--"\240\159\165\154 New Easter Huge!",
+	"\240\159\143\134 oi!",
+	--"\240\159\144\190 Crystal Exclusives!",
+	"\240\159\147\133 Updates weekly!",
+	"(Saturday 12am 0 Time Zone)"
+};
+local m_Library = require(game.ReplicatedStorage:WaitForChild("Framework"):WaitForChild("Library"));
+while not m_Library.Loaded do
+	game:GetService("RunService").Heartbeat:Wait();
+end
+local t_UpdateLog = m_Library.GUI.UpdateLog;
+local bool1 = false;
+function Show() -- Line: 33
+	--[[
+		Upvalues:
+			[1] = t_UpdateLog
+			[2] = table1
+			[3] = m_Library
+	--]]
+	t_UpdateLog.Desc.Text = "New Update! (" .. "octuberber 03th, 2025" .. ")";
+	for key1, val1 in ipairs(table1) do
+		local Clone_ret = m_Library.Assets.UI.Changelog.Change:Clone();
+		Clone_ret.Label.Text = val1;
+		Clone_ret.LayoutOrder = key1;
+		Clone_ret.Parent = t_UpdateLog.Changes;
+	end
+	local UIListLayout = t_UpdateLog.Changes:FindFirstChildOfClass("UIListLayout");
+	local UIPadding = t_UpdateLog.Changes:FindFirstChildOfClass("UIPadding");
+	UIListLayout:ApplyLayout();
+	t_UpdateLog.Changes.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y + UIPadding.PaddingTop.Offset + UIPadding.PaddingBottom.Offset);
+	t_UpdateLog.Gui.Enabled = true;
+end
+function DoShow() -- Line: 52
+	--[[
+		Upvalues:
+			[1] = m_Library
+	--]]
+	local v1 = m_Library.Save.Get();
+	if v1.LastUpdateLog == m_Library.Shared.UpdateLogId then return end
+	if m_Library.Variables.PickingStarter or not v1.PickedStarter then return end
+	return true;
+end
+function Close() -- Line: 67
+	--[[
+		Upvalues:
+			[1] = t_UpdateLog
+			[2] = m_Library
+	--]]
+	t_UpdateLog.Gui.Enabled = false;
+	m_Library.Audio.Play(4233372211, script, 1, 0.65);
+	m_Library.Network.Fire("Read Changelog");
+end
+if DoShow() then
+	Show();
+end
+t_UpdateLog.Close.Activated:Connect(function() -- Line: 82
+	--[[
+		Upvalues:
+			[1] = bool1
+	--]]
+	if not bool1 then
+		bool1 = true;
+		Close();
+		bool1 = false;
+	end
+end);
+t_UpdateLog.Ok.Activated:Connect(function() -- Line: 91
+	--[[
+		Upvalues:
+			[1] = bool1
+	--]]
+	if not bool1 then
+		bool1 = true;
+		Close();
+		bool1 = false;
+	end
+end);
+m_Library.GUIFX.ButtonFX(t_UpdateLog.Ok);
+m_Library.GUIFX.ButtonFX(t_UpdateLog.Close);
